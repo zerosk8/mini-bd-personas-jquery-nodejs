@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset = utf-8">
+<!--         <link rel = "stylesheet" href = "./css/style.css"> -->
+        <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <style type="text/css">
+            html, body
+            {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background-image: url('http://www.unsigneddesign.com/Seamless_background_textures/1200px/seamlesstexture15_1200.jpg');
+            }
+
+            div
+            {
+                background-image: none;
+            }
+
+            pre
+            {
+                overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+                white-space: pre-wrap; /* css-3 */
+                white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+                white-space: -pre-wrap; /* Opera 4-6 */
+                white-space: -o-pre-wrap; /* Opera 7 */
+                word-wrap: break-word; /* Internet Explorer 5.5+ */
+            }
+
+            p, pre
+            {
+                margin: 10px 10px 10px 10px;
+                padding: 10px 10px 10px 10px;
+            }
+
+            td.celda_boton
+            {
+                padding-top: 20px;
+                padding-left: 20px;
+            }
+
+            span.boton
+            {
+                display: block;
+                background: none repeat scroll 0% 0% rgb(65, 98, 168);
+                border-width: 1px;
+                border-style: solid;
+                border-color: rgb(56, 83, 140) rgb(31, 45, 77) rgb(21, 30, 51);
+                border-radius: 4px;
+                box-shadow: 0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17);
+                color: rgb(255, 255, 255);
+                font: bold 20px/1 "helvetica neue",helvetica,arial,sans-serif;
+                margin-bottom: 10px;
+                padding: 10px 0px 12px;
+                text-align: center;
+                text-shadow: 0px -1px 1px rgb(30, 45, 77);
+                width: 150px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #banda_izquierda, #banda_derecha
+            {
+                height: 100%;
+                min-height: 5500px;
+                max-width: 125px;
+                width: 10%;
+                margin: 0;
+                padding: 0;
+                float: left;
+                background-repeat: repeat;
+                background-image: url('http://www.unsigneddesign.com/Seamless_background_textures/1200px/seamlesstexture15_1200.jpg');
+            }
+
+            #banda_derecha
+            {
+                float: right;
+            }
+
+            #cuerpo
+            {
+                height: 100%;
+                width: 75%;
+                float: left;
+                padding: 10px 10px 10px 10px;
+                background-image: url('http://www.unsigneddesign.com/Seamless_background_textures/1200px/seamlesstexture15_1200.jpg');
+            }
+
+            #cuerpo #parte1, #cuerpo #parte2
+            {
+                background-image: url('http://www.unsigneddesign.com/Seamless_background_textures/1200px/seamlesstexture15_1200.jpg');
+            }
+
+            #cuerpo div
+            {
+            /*     height: 100%; */
+                box-shadow: 0px 5px 40px rgba(0,0,0,0.1);
+                margin-top: 5px;
+                padding: 0px 10px 10px 10px;
+                border-radius: 5px;
+                background-color: white;
+            }
+
+            #cuerpo h1
+            {
+                background-color: rgb(238, 67, 46);
+                background: -moz-linear-gradient(center top , rgb(238, 67, 46) 0%, rgb(198, 57, 41) 40%, rgb(181, 23, 0) 50%, rgb(137, 17, 0) 100%);
+                background: -webkit-linear-gradient(270deg , rgb(238, 67, 46) 0%, rgb(198, 57, 41) 40%, rgb(181, 23, 0) 50%, rgb(137, 17, 0) 100%);
+                background: linear-gradient(180deg , rgb(238, 67, 46) 0%, rgb(198, 57, 41) 40%, rgb(181, 23, 0) 50%, rgb(137, 17, 0) 100%);
+                border: 1px solid rgb(149, 17, 0);
+                border-radius: 5px;
+                box-shadow: 0px 0px 0px 1px rgba(255, 115, 100, 0.4) inset, 0px 3px 3px rgb(51, 51, 51);
+                color: white;
+                font: bold 20px/1 "helvetica neue",helvetica,arial,sans-serif;
+                padding: 12px 0px 14px;
+                text-align: center;
+                text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.8);
+            }
+
+            #cuerpo h2
+            {
+                background-color: rgb(127, 191, 77);
+                background: -moz-linear-gradient(center top , rgb(127, 191, 77) 20%, rgb(99, 166, 47) 50%);
+                background: -webkit-linear-gradient(270deg , #7FBF4D 40%, #63A62F 70%);
+                background: linear-gradient(180deg , #7FBF4D 40%, #63A62F 70%);
+                border-width: 1px;
+                border-style: solid;
+                border-color: rgb(99, 166, 47) rgb(99, 166, 47) rgb(91, 153, 43);
+                border-image: none;
+                border-radius: 3px;
+                box-shadow: 0px 0px 0px 1px rgba(255, 115, 100, 0.4) inset, 0px 3px 3px rgb(51, 51, 51);
+                color: rgb(255, 255, 255);
+                font: 20px/1 "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+                padding: 7px 20px 8px;
+                text-align: left;
+                text-shadow: 0px -1px 0px rgb(76, 144, 33);
+            }
+
+            #cuerpo h1 a, #cuerpo h2 a
+            {
+                text-decoration: none;
+                color: white;
+            }
+        </style>
+        <title>Programas cliente y servidor en JQuery y Node.js</title>
+    </head>
+    
+    <body>
+        <div id="banda_izquierda"></div>
+        
+        <div id="cuerpo">
+            <div id="parte1">
+                <div id="introduccion1">
+                    <h1>Mini-base de datos de Personas</h1>
+                    
+                    <p>Las operaciones que puede realizar son:
+                        <ol>
+                        <li>Crear una nueva persona a partir de sus datos personales.</li>
+                        <li>Consultar los datos de una persona a partir de su DNI, o bien, consultar los datos de todas las personas a partir del 
+                            carácter '*'.</li>
+                        <li>Actualizar los datos personales de una persona.</li>
+                        <li>Buscar datos personales, según un atributo dado y el valor especificado.</li>
+                        </ol>
+                    </p>
+                </div>
+                
+                <div id="formulario_creacion">
+                    <h2>Creación de persona</h2>
+                    
+                    <p>Introduzca los datos de la nueva persona:
+                        <table>
+                            <tr><td>DNI:</td><td><input type="text" name="dni" id="dni"  size="10"/></td></tr>
+                            <tr><td>Nombre:</td><td><input type="text" name="nombre" id="nombre"  size="10"/></td></tr>
+                            <tr><td>Primer apellido:</td><td><input type="text" name="apellido1" id="apellido1"  size="10"/></td></tr>
+                            <tr><td>Segundo apellido:</td><td><input type="text" name="apellido2" id="apellido2"  size="10"/></td></tr>
+                            <tr><td>Edad:</td><td><input type="text" name="edad" id="edad"  size="10"/></td></tr>
+                            <tr><td class="celda_boton" colspan="2"><span class="boton" id="crear_persona" 
+                                onClick="crearPersona();">Crear</span></td></tr>
+                        </table>
+                    </p>
+                    
+                    <p id="respuesta_creacion"></p>
+                </div>
+                
+                <div id="formulario_consulta">
+                    <h2>Consulta de datos personales</h2>
+                    
+                    <p>Introduzca el DNI de la persona o el carácter '*' (sin comillas) para todas las personas:
+                        <table>
+                            <tr><td>DNI:</td><td><input type="text" name="dni" id="dni"  size="10"/></td></tr>
+                            <tr><td class="celda_boton" colspan="2"><span class="boton" id="consultar_persona" 
+                                onClick="consultarPersona('consultar');">Consultar</span></td></tr>
+                        </table>
+                    </p>
+                    
+                    <p id="respuesta_consulta"></p>
+                </div>
+                
+                <div id="formulario_actualizacion">
+                    <h2>Actualización de persona</h2>
+                    
+                    <p>Introduzca el DNI de la persona:
+                        <table>
+                            <tr><td>DNI:</td><td><input type="text" name="dni" id="dni"  size="10"/></td></tr>
+                            <tr><td class="celda_boton" colspan="2"><span class="boton" id="consultar_persona_2" 
+                                onClick="consultarPersona('actualizar');">Consultar</span></td></tr>
+                        </table>
+                    </p>
+                    
+                    <p id="respuesta_actualizacion"></p>
+                    
+                    <p id="datos_persona">
+                    </p>
+                </div>
+                
+                <div id="formulario_busqueda">
+                    <h2>Búsqueda de personas</h2>
+                    
+                    <p>Introduzca el criterio y el valor de búsqueda:
+                        <table>
+                            <tr><td>
+                                <select name="atributo" id="atributo">
+                                    <option value="nombre">Nombre</option>
+                                    <option value="apellido1">Primer apellido</option>
+                                    <option value="apellido2">Segundo apellido</option>
+                                    <option value="edad">Edad</option>
+                                </select>
+                            </td><td><input type="text" name="valoe" id="valor"  size="10"/></td></tr>
+                            <tr><td class="celda_boton" colspan="2"><span class="boton" id="buscar_persona" 
+                                onClick="buscarPersonas();">Buscar</span></td></tr>
+                        </table>
+                    </p>
+                    
+                    <p id="respuesta_busqueda"></p>
+                </div>
+            </div>
+            
+            <div id="parte2">
+                <div id="introduccion1">
+                    <h1>Diseño e implementación</h1>
+                    <p>En este apartado se comenta y especifica el código fuente, escrito en JQuery, para realizar las consultas al servidor siguiendo 
+                        el protocolo HTTP.
+                    </p>
+                </div>
+                
+                <div>
+                    <h2>JQuery: Creación de persona</h2>
+                    
+                    <p>Los campos del formulario para crear a una nueva persona se encuentran en la división ("div") cuyo "id" es "formulario_creacion". 
+                        Dichos campos son aquellos cuyos atributos "id" son: "dni", "nombre", "apellido1", "apellido2" y "edad". Además, el formulario 
+                        contiene un elemento "p" cuyo "id" es "respuesta_creacion", y este elemento se usará para representar la información obtenida tras realizar la petición al servidor.
+                        <br><br>
+                        Inicialmente, lo que se hace es limpiar el formato del párrafo "respuesta_creacion". Luego, se reconstruye la URL a partir de 
+                        los campos indicados en el formulario. Cada campo debe ir unido en la URL mediante el carácter "/". Posteriormente, se realiza 
+                        la petición de tipo "PUT" mediante la función "ajax()" de JQuery, y dentro, se indica el tipo de operación que se va a realizar 
+                        con el campo "type". Es necesario hacerlo así porque no existe una función específica en JQuery, como "get()" o "post()".
+                        <br><br>
+                        Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje de error en caso de error, o de éxito en caso de que se haya creado la persona, y se limpian los campos del formulario.
+                    </p>
+                    
+                    <pre>
+                        function crearPersona()
+                        {
+                            $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+                            $("#formulario_creacion #respuesta_creacion").css("color","black");
+                            $("#formulario_creacion #respuesta_creacion").css("background-color","white");
+                            $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+                            $("#formulario_creacion #respuesta_creacion").css("text-align","normal");
+                            
+                            $("#formulario_creacion #respuesta_creacion").html("");
+                            
+                            recurso = URL_BASE + $.trim($("#formulario_creacion #dni").val()) + "/" + $.trim($("#formulario_creacion #nombre").val()) + "/";
+                            recurso += $.trim($("#formulario_creacion #apellido1").val()) + "/" + $.trim($("#formulario_creacion #apellido2").val()) + "/";
+                            recurso += $.trim($("#formulario_creacion #edad").val());
+                            
+                            $.ajax(recurso,
+                            {
+                                type: "PUT"
+                            }).done(function(data)
+                            {
+                                $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+                                $("#formulario_creacion #respuesta_creacion").css("color","white");
+                                $("#formulario_creacion #respuesta_creacion").css("background-color","#0099FF");
+                                $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+                                $("#formulario_creacion #respuesta_creacion").css("text-align","center");
+                                
+                                if("error" in data)
+                                {
+                                    $("#formulario_creacion #respuesta_creacion").html("Error :" + data.error);
+                                }
+                                else
+                                {
+                                    $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + data.creado + " creada con éxito.");
+                                    
+                                    $("#formulario_creacion #dni").val('');
+                                    $("#formulario_creacion #nombre").val('');
+                                    $("#formulario_creacion #apellido1").val('');
+                                    $("#formulario_creacion #apellido2").val('');
+                                    $("#formulario_creacion #edad").val('');
+                                }
+                            });
+                        }
+                    </pre>
+                </div>
+                
+                <div>
+                    <h2>JQuery: Consulta de datos personales</h2>
+                    
+                    <p>Esta operación se divide en dos operaciones. Pueden consultarse los datos de una persona para visualizarlos, o bien, consultarlos 
+                        para actualizarlos. La diferencia principalmente de donde se obtiene la información en el documento HTML:
+                        <ul>
+                        <li>Consultar los datos personales: Los campos del formulario para consultar los datos de una persona se encuentran en la 
+                            división ("div") cuyo "id" es "formulario_consulta". El único campo necesario para buscar la información de una persona es 
+                            su DNI, y en el formulario es aquel que tiene como "id" el valor "dni". Además, el formulario contiene un elemento "p" cuyo 
+                            "id" es "respuesta_consulta", y este elemento se usará para representar la información obtenida tras realizar la petición al 
+                            servidor.
+                            <br><br>
+                            Inicialmente, lo que se hace es limpiar el formato del párrafo "respuesta_consulta". Luego, se reconstruye la URL a partir 
+                            de los campos indicados en el formulario. Cada campo debe ir unido en la URL mediante el carácter "/". Posteriormente, se 
+                            realiza la petición de tipo "GET" mediante la función "get()" de JQuery.
+                            <br><br>
+                            Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje de error 
+                            en caso de error, o en caso de éxito, se mostrará una tabla que puede los datos de una persona o los datos de todas las 
+                            personas de la base de datos.
+                        </li>
+                        <li>Actualizar los datos personales: Los campos del formulario para consultar los datos de una persona, al realizar una 
+                            actualización de sus datos se encuentran en la división ("div") cuyo "id" es "formulario_actualizacion". El único campo 
+                            necesario para buscar la información de una persona es su DNI, y en el formulario es aquel que tiene como "id" el valor 
+                            "dni". Además, el formulario contiene un elemento "p" cuyo "id" es "respuesta_actualizacion", y este elemento se usará para 
+                            representar la información obtenida tras realizar la petición al servidor.
+                            <br><br>
+                            Inicialmente, lo que se hace es limpiar el formato del párrafo "respuesta_actualizacion". Luego, se reconstruye la URL a 
+                            partir de los campos indicados en el formulario. Cada campo debe ir unido en la URL mediante el carácter "/". 
+                            Posteriormente, se realiza la petición de tipo "GET" mediante la función "get()" de JQuery.
+                            <br><br>
+                            Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje de error 
+                            en caso de error, o en caso de éxito, se mostrará una tabla con los datos de la persona, que podrán ser editados 
+                            directamente. Todos los campos, excepto el DNI, pueden ser editados.
+                        </li>
+                        </ul>
+                    </p>
+                    
+                    <pre>
+                        function consultarPersona(operacion)
+                        {
+                            if(operacion == "consultar")
+                            {
+                                $("#formulario_consulta #respuesta_consulta").css("font-weight","normal");
+                                $("#formulario_consulta #respuesta_consulta").css("color","black");
+                                $("#formulario_consulta #respuesta_consulta").css("background-color","white");
+                                $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                                $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                                
+                                $("#formulario_consulta #respuesta_consulta").html("");
+                                
+                                recurso = URL_BASE + $.trim($("#formulario_consulta #dni").val());
+                                
+                                $.get(recurso,function(data)
+                                {
+                                    if("error" in data)
+                                    {
+                                        $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                                        $("#formulario_consulta #respuesta_consulta").css("color","white");
+                                        $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                                        $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                                        $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                                        
+                                        $("#formulario_consulta #respuesta_consulta").html("Error: " + data.error);
+                                    }
+                                    else if("informacion" in data)
+                                    {
+                                        $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                                        $("#formulario_consulta #respuesta_consulta").css("color","white");
+                                        $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                                        $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                                        $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                                        
+                                        $("#formulario_consulta #respuesta_consulta").html("Información: " + data.informacion);
+                                    }
+                                    else
+                                    {
+                                        var tabla;
+                                        
+                                        tabla = "&lt;table id='tabla_consulta'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
+                                        tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
+                                        
+                                        for(i in data)
+                                        {
+                                            tabla += "&lt;tr&gt;&lt;td&gt;" + data[i].dni + "&lt;/td&gt;&lt;td&gt;" + data[i].nombre + "&lt;/td&gt;";
+                                            tabla += "&lt;td&gt;" + data[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + data[i].apellido2 + "&lt;/td&gt;";
+                                            tabla += "&lt;td&gt;" + data[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
+                                        }
+                                        
+                                        $("#formulario_consulta #respuesta_consulta").html(tabla);
+                                        
+                                        $("#formulario_consulta #dni").val("");
+                                        
+                                        $("#tabla_consulta").css("display","none");
+                                        $("#tabla_consulta").fadeIn("slow");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","normal");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("color","black");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","white");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                                
+                                $("#formulario_actualizacion #respuesta_actualizacion").html("");
+                                $("#formulario_actualizacion #datos_persona").html("");
+                                
+                                if($("#formulario_actualizacion #dni").val() == "*")
+                                {
+                                    recurso = URL_BASE + '';
+                                }
+                                else
+                                {
+                                    recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni").val());
+                                }
+                                
+                                $.get(recurso,function(data)
+                                {
+                                    if("error" in data)
+                                    {
+                                        $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+                                        $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+                                        $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+                                        $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                                        $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                                        
+                                        $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.error);
+                                    }
+                                    else
+                                    {
+                                        var tabla;
+                                        var dni = Object.keys(data)[0];
+                                        
+                                        tabla += "&lt;table&gt;&lt;tr&gt;&lt;td&gt;DNI:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='dni2' id='dni2' size='10' value='" + data[dni].dni;
+                                        tabla += "' readonly/&gt;&lt;/td&gt;&lt;/tr&gt;";
+                                        
+                                        tabla += "&lt;tr&gt;&lt;td&gt;Nombre:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='nombre' id='nombre' size='10' value='" + data[dni].nombre;
+                                        tabla += "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                                        
+                                        tabla += "&lt;tr&gt;&lt;td&gt;Primer apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido1' id='apellido1'";
+                                        tabla += " size='10'value='" + data[dni].apellido1 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                                        
+                                        tabla += "&lt;tr&gt;&lt;td&gt;Segundo apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido2' id='apellido2'"; 
+                                        tabla += " size='10'value='" + data[dni].apellido2 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                                        
+                                        tabla += "&lt;tr&gt;&lt;td&gt;Edad:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='edad' id='edad'  size='10' value='" + data[dni].edad + "'/&gt;";
+                                        tabla += "&lt;/td&gt;&lt;/tr&gt;"
+                                        
+                                        tabla += "&lt;tr&gt;&lt;td class='celda_boton' colspan='2'&gt;&lt;span class='boton' id='actualizar_persona'";
+                                        tabla += " onClick='actualizarPersona();'&gt;Actualizar&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+                                        
+                                        $("#formulario_actualizacion #datos_persona").html(tabla);
+                                        
+                                        $("#formulario_actualizacion #dni").val("");
+                                        
+                                        $("#tabla_actualizacion").css("display","none");
+                                        $("#tabla_actualizacion").fadeIn("slow");
+                                    }
+                                });
+                            }
+                        }
+                    </pre>
+                </div>
+                
+                <div>
+                    <h2>JQuery: Actualización de persona</h2>
+                    
+                    <p>Una vez que la persona ha consultado los datos de la persona que quiere actualizar, puede editar los atributos que desee y enviar 
+                        la peteición al servidor. Los campos del formulario para actualizar los datos de una persona se encuentran en la división 
+                        ("div") cuyo "id" es "formulario_actualizacion". Dichos campos son aquellos cuyos atributos "id" son: "dni", "nombre", 
+                        "apellido1", "apellido2" y "edad". Además, el formulario contiene un elemento "p" cuyo "id" es "respuesta_actualizacion", y este 
+                        elemento se usará para representar la información obtenida tras realizar la petición al servidor.
+                        <br><br>
+                        Inicialmente, se reconstruye la URL a partir de los campos indicados en el formulario. Cada campo debe ir unido en la URL 
+                        mediante el carácter "/". Posteriormente, se realiza la petición de tipo "POST" mediante la función "post()" de JQuery.
+                        <br><br>
+                        Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta y se indica el mensaje de éxito al 
+                        realizar la actualización.
+                    </p>
+                    
+                    <pre>
+                        function actualizarPersona()
+                        {
+                            recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni2").val()) + "/" + $.trim( $("#formulario_actualizacion #nombre").val());
+                            recurso += "/" + $.trim($("#formulario_actualizacion #apellido1").val());
+                            recurso += "/" + $.trim($("#formulario_actualizacion #apellido2").val());
+                            recurso += "/" + $.trim($("#formulario_actualizacion #edad").val());
+                            
+                            $.post(recurso,function(data)
+                            {
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                                $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                                
+                                $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + data.actualizado + " actualizada con éxito.");
+                                
+                                $("#formulario_actualizacion #datos_persona").html('');
+                            });
+                        }
+                    </pre>
+                </div>
+                
+                <div>
+                    <h2>JQuery: Búsqueda de persona</h2>
+                    
+                    <p>Los campos del formulario para actualizar los datos de una persona se encuentran en la división ("div") cuyo "id" es 
+                        "formulario_busqueda". Los campos del formulario son aquellos cuyo "id" son: "atributo" y "valor". En el campo "atributo", el 
+                        usuario puede seleccionar el dato de persona a buscar: DNI, Nombre, 1º apellido, 2º apellido o Edad. Además, el formulario 
+                        contiene un elemento "p" cuyo "id" es "respuesta_busqueda", y este elemento se usará para representar la información obtenida 
+                        tras realizar la petición al servidor.
+                        <br><br>
+                        Inicialmente, lo que se hace es limpiar el formato del párrafo "respuesta_busqueda". Luego, se reconstruye la URL a partir de 
+                        los campos indicados en el formulario. Cada campo debe ir unido en la URL mediante el carácter "/". Posteriormente, se realiza 
+                        la petición de tipo "GET" mediante la función "get()" de JQuery.
+                        <br><br>
+                        Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje error en caso 
+                        de error, o de información en caso de que no se encuentre a ningún usuario según el criterio de búsqueda. En caso de éxito, se 
+                        muestra una tabla con la información de las personas que cumplen el criterio de búsqueda.
+                    </p>
+                    
+                    <pre>
+                        function buscarPersonas()
+                        {
+                            $("#formulario_busqueda #respuesta_busqueda").css("font-weight","normal");
+                            $("#formulario_busqueda #respuesta_busqueda").css("color","black");
+                            $("#formulario_busqueda #respuesta_busqueda").css("background-color","white");
+                            $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                            $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                            
+                            $("#formulario_busqueda #respuesta_busqueda").html("");
+                            
+                            recurso = URL_BASE + $("#formulario_busqueda #atributo").val() + "/" + $.trim($("#formulario_busqueda #valor").val());
+                            
+                            $.get(recurso,function(data)
+                            {
+                                if("error" in data)
+                                {
+                                    $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                                    
+                                    $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.error);
+                                }
+                                else if("informacion" in data)
+                                {
+                                    $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                                    $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                                    
+                                    $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.informacion);
+                                }
+                                else
+                                {
+                                    var tabla;
+                                    
+                                    tabla = "&lt;table id='tabla_busqueda'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
+                                    tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
+                                    
+                                    for(i in data)
+                                    {
+                                        tabla += "&lt;tr&gt;&lt;td&gt;" + data[i].dni + "&lt;/td&gt;&lt;td&gt;" + data[i].nombre + "&lt;/td&gt;";
+                                        tabla += "&lt;td&gt;" + data[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + data[i].apellido2 + "&lt;/td&gt;";
+                                        tabla += "&lt;td&gt;" + data[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
+                                    }
+                                    
+                                    $("#formulario_busqueda #respuesta_busqueda").html(tabla);
+                                    
+                                    $("#tabla_busqueda").css("display","none");
+                                    $("#tabla_busqueda").fadeIn("slow");
+                                }
+                            });
+                    </pre>
+                </div>
+            </div>
+        </div>
+        
+        <div id="banda_derecha"></div>
+        
+        <script type="text/javascript">
+            var URL_BASE = "/persona/";
+            var recurso;
+            var seccion = 1;
+            var apartado;
+            
+            // Funcion para registrar los datos de una persona en la base de datos
+            function crearPersona()
+            {
+                $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+                $("#formulario_creacion #respuesta_creacion").css("color","black");
+                $("#formulario_creacion #respuesta_creacion").css("background-color","white");
+                $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+                $("#formulario_creacion #respuesta_creacion").css("text-align","normal");
+                
+                $("#formulario_creacion #respuesta_creacion").html("");
+                
+                recurso = URL_BASE + $.trim($("#formulario_creacion #dni").val()) + "/" + $.trim($("#formulario_creacion #nombre").val()) + "/";
+                recurso += $.trim($("#formulario_creacion #apellido1").val()) + "/" + $.trim($("#formulario_creacion #apellido2").val()) + "/";
+                recurso += $.trim($("#formulario_creacion #edad").val());
+                
+                $.ajax(recurso,
+                {
+                    type: "PUT"
+                }).done(function(data)
+                {
+                    $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+                    $("#formulario_creacion #respuesta_creacion").css("color","white");
+                    $("#formulario_creacion #respuesta_creacion").css("background-color","#0099FF");
+                    $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+                    $("#formulario_creacion #respuesta_creacion").css("text-align","center");
+                    
+                    if("error" in data)
+                    {
+                        $("#formulario_creacion #respuesta_creacion").html("Error :" + data.error);
+                    }
+                    else
+                    {
+                        $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + data.creado + " creada con éxito.");
+                        
+                        $("#formulario_creacion #dni").val('');
+                        $("#formulario_creacion #nombre").val('');
+                        $("#formulario_creacion #apellido1").val('');
+                        $("#formulario_creacion #apellido2").val('');
+                        $("#formulario_creacion #edad").val('');
+                    }
+                });
+            }
+            
+            // Funcion para consultar los datos de una persona o todas las personas en la base de datos
+            function consultarPersona(operacion)
+            {
+                if(operacion == "consultar")
+                {
+                    $("#formulario_consulta #respuesta_consulta").css("font-weight","normal");
+                    $("#formulario_consulta #respuesta_consulta").css("color","black");
+                    $("#formulario_consulta #respuesta_consulta").css("background-color","white");
+                    $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                    $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                    
+                    $("#formulario_consulta #respuesta_consulta").html("");
+                    
+                    recurso = URL_BASE + $.trim($("#formulario_consulta #dni").val());
+                    
+                    $.get(recurso,function(data)
+                    {
+                        if("error" in data)
+                        {
+                            $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                            $("#formulario_consulta #respuesta_consulta").css("color","white");
+                            $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                            $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                            $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                            
+                            $("#formulario_consulta #respuesta_consulta").html("Error: " + data.error);
+                        }
+                        else if("informacion" in data)
+                        {
+                            $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                            $("#formulario_consulta #respuesta_consulta").css("color","white");
+                            $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                            $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                            $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                            
+                            $("#formulario_consulta #respuesta_consulta").html("Información: " + data.informacion);
+                        }
+                        else
+                        {
+                            var tabla;
+                            
+                            tabla = "<table id='tabla_consulta'><tr><th>DNI</th><th>Nombre</th><th>Primer apellido</th>";
+                            tabla += "<th>Segundo apellido</th><th>Edad</th></tr>";
+                            
+                            for(i in data)
+                            {
+                                tabla += "<tr><td>" + data[i].dni + "</td><td>" + data[i].nombre + "</td>";
+                                tabla += "<td>" + data[i].apellido1 + "</td><td>" + data[i].apellido2 + "</td>";
+                                tabla += "<td>" + data[i].edad + "</td></tr>";
+                            }
+                            
+                            $("#formulario_consulta #respuesta_consulta").html(tabla);
+                            
+                            $("#formulario_consulta #dni").val("");
+                            
+                            $("#tabla_consulta").css("display","none");
+                            $("#tabla_consulta").fadeIn("slow");
+                        }
+                    });
+                }
+                else
+                {
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","normal");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("color","black");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","white");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                    
+                    $("#formulario_actualizacion #respuesta_actualizacion").html("");
+                    $("#formulario_actualizacion #datos_persona").html("");
+                    
+                    if($("#formulario_actualizacion #dni").val() == "*")
+                    {
+                        recurso = URL_BASE + '';
+                    }
+                    else
+                    {
+                        recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni").val());
+                    }
+                    
+                    $.get(recurso,function(data)
+                    {
+                        if("error" in data)
+                        {
+                            $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+                            $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+                            $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+                            $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                            $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                            
+                            $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.error);
+                        }
+                        else
+                        {
+                            var tabla;
+                            var dni = Object.keys(data)[0];
+                            
+                            tabla += "<table><tr><td>DNI:</td><td><input type='text' name='dni2' id='dni2' size='10' value='" + data[dni].dni;
+                            tabla += "' readonly/></td></tr>";
+                            
+                            tabla += "<tr><td>Nombre:</td><td><input type='text' name='nombre' id='nombre' size='10' value='" + data[dni].nombre;
+                            tabla += "'/></td></tr>"
+                            
+                            tabla += "<tr><td>Primer apellido:</td><td><input type='text' name='apellido1' id='apellido1'";
+                            tabla += " size='10'value='" + data[dni].apellido1 + "'/></td></tr>"
+                            
+                            tabla += "<tr><td>Segundo apellido:</td><td><input type='text' name='apellido2' id='apellido2'"; 
+                            tabla += " size='10'value='" + data[dni].apellido2 + "'/></td></tr>"
+                            
+                            tabla += "<tr><td>Edad:</td><td><input type='text' name='edad' id='edad'  size='10' value='" + data[dni].edad + "'/>";
+                            tabla += "</td></tr>"
+                            
+                            tabla += "<tr><td class='celda_boton' colspan='2'><span class='boton' id='actualizar_persona'";
+                            tabla += " onClick='actualizarPersona();'>Actualizar</span></td></tr></table>"
+                            
+                            $("#formulario_actualizacion #datos_persona").html(tabla);
+                            
+                            $("#formulario_actualizacion #dni").val("");
+                            
+                            $("#tabla_actualizacion").css("display","none");
+                            $("#tabla_actualizacion").fadeIn("slow");
+                        }
+                    });
+                }
+            }
+            
+            // Funcion para actualizar todos los datos de una persona en la base de datos
+            function actualizarPersona()
+            {
+                recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni2").val()) + "/" + $.trim( $("#formulario_actualizacion #nombre").val());
+                recurso += "/" + $.trim($("#formulario_actualizacion #apellido1").val());
+                recurso += "/" + $.trim($("#formulario_actualizacion #apellido2").val());
+                recurso += "/" + $.trim($("#formulario_actualizacion #edad").val());
+                
+                $.post(recurso,function(data)
+                {
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                    $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                    
+                    $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + data.actualizado + " actualizada con éxito.");
+                    
+                    $("#formulario_actualizacion #datos_persona").html('');
+                });
+            }
+            
+            // Funcion para mostrar informacion de personas donde uno de los criterios de busqueda coincida con el valor introducido
+            function buscarPersonas()
+            {
+                $("#formulario_busqueda #respuesta_busqueda").css("font-weight","normal");
+                $("#formulario_busqueda #respuesta_busqueda").css("color","black");
+                $("#formulario_busqueda #respuesta_busqueda").css("background-color","white");
+                $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                
+                $("#formulario_busqueda #respuesta_busqueda").html("");
+                
+                recurso = URL_BASE + $("#formulario_busqueda #atributo").val() + "/" + $.trim($("#formulario_busqueda #valor").val());
+                
+                $.get(recurso,function(data)
+                {
+                    if("error" in data)
+                    {
+                        $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+                        $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+                        $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+                        $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                        $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                        
+                        $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.error);
+                    }
+                    else if("informacion" in data)
+                    {
+                        $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+                        $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+                        $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+                        $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+                        $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+                        
+                        $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.informacion);
+                    }
+                    else
+                    {
+                        var tabla;
+                        
+                        tabla = "<table id='tabla_busqueda'><tr><th>DNI</th><th>Nombre</th><th>Primer apellido</th>";
+                        tabla += "<th>Segundo apellido</th><th>Edad</th></tr>";
+                        
+                        for(i in data)
+                        {
+                            tabla += "<tr><td>" + data[i].dni + "</td><td>" + data[i].nombre + "</td>";
+                            tabla += "<td>" + data[i].apellido1 + "</td><td>" + data[i].apellido2 + "</td>";
+                            tabla += "<td>" + data[i].edad + "</td></tr>";
+                        }
+                        
+                        $("#formulario_busqueda #respuesta_busqueda").html(tabla);
+                        
+                        $("#tabla_busqueda").css("display","none");
+                        $("#tabla_busqueda").fadeIn("slow");
+                    }
+                });
+            }
+            
+            /****************************************************************************************************/
+            
+            // Añadimos un 'ancla' a cada cabecera 'h1' y 'h2'
+            $("h1").each(function()
+            {
+                $(this).prepend(seccion + ". ");
+                $(this).append(" (<a name = 'seccion_" + seccion + "' href = '#seccion_" + seccion + "'>#</a>)");
+                
+                apartado = 1;
+                $(this).parent().nextAll("div").children("h2").each(function()
+                {
+                    $(this).prepend(seccion + "." + apartado + ". ");
+                    $(this).append(" (<a name = 'seccion_" + seccion + "_apartado_" + apartado + "' href = '#seccion_" + seccion + "_apartado_" + apartado + "'>#</a>)");
+                    apartado++;
+                });
+                
+                seccion++;
+            });
+            
+            // Añadimos navegacion entre las cabeceras 'h1'
+            $("h1").each(function()
+            {
+                var sig_cabecera_h1 = $(this).parent().parent().next().children("div").first().children("h1").first();
+                var ant_cabecera_h1 = $(this).parent().parent().prev().children("div").first().children("h1").first();
+                var ancla1, ancla2;
+                var navegacion = '';
+                
+                if(ant_cabecera_h1.length > 0 && sig_cabecera_h1.length > 0)
+                {
+                    ancla1 = $(ant_cabecera_h1).children().last();
+                    ancla2 = $(sig_cabecera_h1).children().last();
+                    
+                    navegacion = "<a href = '#" + $(ancla1).attr("name") + "'>(^ </a><a href = '#" 
+                                + $(ancla2).attr("name") + "'>| v)</a> ";
+                }
+                else if(ant_cabecera_h1.length > 0)
+                {
+                    ancla1 = $(ant_cabecera_h1).children().last();
+                    
+                    navegacion = "<a href = '#" + $(ancla1).attr("name") + "'>(^)</a> ";
+                }
+                else if(sig_cabecera_h1.length > 0)
+                {
+                    ancla1 = $(sig_cabecera_h1).children().last();
+                    
+                    navegacion = "<a href = '#" + $(ancla1).attr("name") + "'>(v)</a> ";
+                }
+                
+                $(this).prepend(navegacion);
+            });
+            
+            // Añadimos animaciones a los botones
+            $("#crear_persona").mouseover(function()
+            {
+                $(this).css("cursor","pointer");
+            })
+            .mouseup(function()
+            {
+                $(this).css("box-shadow","0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17)");
+            })
+            .mousedown(function()
+            {
+                $(this).css("box-shadow","0px 1px 0px rgb(29, 44, 77), 0px 2px 4px 1px rgb(17, 17, 17)");
+            });
+            
+            $("#consultar_persona").mouseover(function()
+            {
+                $(this).css("cursor","pointer");
+            })
+            .mouseup(function()
+            {
+                $(this).css("box-shadow","0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17)");
+            })
+            .mousedown(function()
+            {
+                $(this).css("box-shadow","0px 1px 0px rgb(29, 44, 77), 0px 2px 4px 1px rgb(17, 17, 17)");
+            });
+            
+            $("#consultar_persona_2").mouseover(function()
+            {
+                $(this).css("cursor","pointer");
+            })
+            .mouseup(function()
+            {
+                $(this).css("box-shadow","0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17)");
+            })
+            .mousedown(function()
+            {
+                $(this).css("box-shadow","0px 1px 0px rgb(29, 44, 77), 0px 2px 4px 1px rgb(17, 17, 17)");
+            });
+            
+            $("#actualizar_persona").mouseover(function()
+            {
+                $(this).css("cursor","pointer");
+            })
+            .mouseup(function()
+            {
+                $(this).css("box-shadow","0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17)");
+            })
+            .mousedown(function()
+            {
+                $(this).css("box-shadow","0px 1px 0px rgb(29, 44, 77), 0px 2px 4px 1px rgb(17, 17, 17)");
+            });
+            
+            $("#buscar_persona").mouseover(function()
+            {
+                $(this).css("cursor","pointer");
+            })
+            .mouseup(function()
+            {
+                $(this).css("box-shadow","0px 1px 10px 1px rgb(92, 139, 238) inset, 0px 1px 0px rgb(29, 44, 77), 0px 6px 0px rgb(31, 48, 83), 0px 8px 4px 1px rgb(17, 17, 17)");
+            })
+            .mousedown(function()
+            {
+                $(this).css("box-shadow","0px 1px 0px rgb(29, 44, 77), 0px 2px 4px 1px rgb(17, 17, 17)");
+            });
+            
+        </script>
+        
+    </body>
+</html>
