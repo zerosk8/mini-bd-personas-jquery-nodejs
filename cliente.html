@@ -96,12 +96,17 @@
 
             #cuerpo div
             {
-            /*     height: 100%; */
                 box-shadow: 0px 5px 40px rgba(0,0,0,0.1);
                 margin-top: 5px;
                 padding: 0px 10px 10px 10px;
                 border-radius: 5px;
                 background-color: white;
+            }
+            
+            #parte1 p, #parte1 table
+            {
+                margin-left: auto;
+                margin-right: auto;
             }
 
             #cuerpo h1
@@ -223,6 +228,7 @@
                         <table>
                             <tr><td>
                                 <select name="atributo" id="atributo">
+                                    <option value="dni">DNI</option>
                                     <option value="nombre">Nombre</option>
                                     <option value="apellido1">Primer apellido</option>
                                     <option value="apellido2">Segundo apellido</option>
@@ -258,51 +264,64 @@
                         la petición de tipo "PUT" mediante la función "ajax()" de JQuery, y dentro, se indica el tipo de operación que se va a realizar 
                         con el campo "type". Es necesario hacerlo así porque no existe una función específica en JQuery, como "get()" o "post()".
                         <br><br>
-                        Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje de error en caso de error, o de éxito en caso de que se haya creado la persona, y se limpian los campos del formulario.
+                        Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje de error en 
+                        caso de error, o de éxito en caso de que se haya creado la persona, y se limpian los campos del formulario. El mensaje recibido 
+                        por el servidor siempre contiene 2 campos dentro de la estructura JSON:
+                        <ul>
+                            <li>status: su valor es "200" en caso de que se haya producido con éxito la creación de la persona, y el valor es "404" en 
+                                caso de error. No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura, ya que su uso es 
+                                meramente informativo y sirve para informar de los mensajes de error dentro de la web, sin que intervenga el protocolo 
+                                HTTP.
+                            </li>
+                            <br>
+                            <li>content: su valor puede contener un mensaje de éxito o de error. No debe confundirse con el protocolo HTTP, aunque 
+                                utilice la misma nomenclatura.
+                            </li>
+                        </ul>
                     </p>
                     
                     <pre>
-                        function crearPersona()
-                        {
-                            $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
-                            $("#formulario_creacion #respuesta_creacion").css("color","black");
-                            $("#formulario_creacion #respuesta_creacion").css("background-color","white");
-                            $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
-                            $("#formulario_creacion #respuesta_creacion").css("text-align","normal");
-                            
-                            $("#formulario_creacion #respuesta_creacion").html("");
-                            
-                            recurso = URL_BASE + $.trim($("#formulario_creacion #dni").val()) + "/" + $.trim($("#formulario_creacion #nombre").val()) + "/";
-                            recurso += $.trim($("#formulario_creacion #apellido1").val()) + "/" + $.trim($("#formulario_creacion #apellido2").val()) + "/";
-                            recurso += $.trim($("#formulario_creacion #edad").val());
-                            
-                            $.ajax(recurso,
-                            {
-                                type: "PUT"
-                            }).done(function(data)
-                            {
-                                $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
-                                $("#formulario_creacion #respuesta_creacion").css("color","white");
-                                $("#formulario_creacion #respuesta_creacion").css("background-color","#0099FF");
-                                $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
-                                $("#formulario_creacion #respuesta_creacion").css("text-align","center");
-                                
-                                if("error" in data)
-                                {
-                                    $("#formulario_creacion #respuesta_creacion").html("Error :" + data.error);
-                                }
-                                else
-                                {
-                                    $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + data.creado + " creada con éxito.");
-                                    
-                                    $("#formulario_creacion #dni").val('');
-                                    $("#formulario_creacion #nombre").val('');
-                                    $("#formulario_creacion #apellido1").val('');
-                                    $("#formulario_creacion #apellido2").val('');
-                                    $("#formulario_creacion #edad").val('');
-                                }
-                            });
-                        }
+function crearPersona()
+{
+    $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+    $("#formulario_creacion #respuesta_creacion").css("color","black");
+    $("#formulario_creacion #respuesta_creacion").css("background-color","white");
+    $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+    $("#formulario_creacion #respuesta_creacion").css("text-align","normal");
+    
+    $("#formulario_creacion #respuesta_creacion").html("");
+    
+    recurso = URL_BASE + $.trim($("#formulario_creacion #dni").val()) + "/" + $.trim($("#formulario_creacion #nombre").val()) + "/";
+    recurso += $.trim($("#formulario_creacion #apellido1").val()) + "/" + $.trim($("#formulario_creacion #apellido2").val()) + "/";
+    recurso += $.trim($("#formulario_creacion #edad").val());
+    
+    $.ajax(recurso,
+    {
+        type: "PUT"
+    }).done(function(data)
+    {
+        $("#formulario_creacion #respuesta_creacion").css("font-weight","bold");
+        $("#formulario_creacion #respuesta_creacion").css("color","white");
+        $("#formulario_creacion #respuesta_creacion").css("background-color","#0099FF");
+        $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
+        $("#formulario_creacion #respuesta_creacion").css("text-align","center");
+        
+        if(data.status == 404)
+        {
+            $("#formulario_creacion #respuesta_creacion").html("Error: " + data.content);
+        }
+        else
+        {
+            $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + $.trim($("#formulario_creacion #dni").val()) + " creada con éxito.");
+            
+            $("#formulario_creacion #dni").val('');
+            $("#formulario_creacion #nombre").val('');
+            $("#formulario_creacion #apellido1").val('');
+            $("#formulario_creacion #apellido2").val('');
+            $("#formulario_creacion #edad").val('');
+        }
+    });
+}
                     </pre>
                 </div>
                 
@@ -326,6 +345,7 @@
                             en caso de error, o en caso de éxito, se mostrará una tabla que puede los datos de una persona o los datos de todas las 
                             personas de la base de datos.
                         </li>
+                        <br>
                         <li>Actualizar los datos personales: Los campos del formulario para consultar los datos de una persona, al realizar una 
                             actualización de sus datos se encuentran en la división ("div") cuyo "id" es "formulario_actualizacion". El único campo 
                             necesario para buscar la información de una persona es su DNI, y en el formulario es aquel que tiene como "id" el valor 
@@ -341,173 +361,203 @@
                             directamente. Todos los campos, excepto el DNI, pueden ser editados.
                         </li>
                         </ul>
+                        El mensaje recibido por el servidor siempre contiene 2 campos dentro de la estructura JSON:
+                        <ul>
+                            <li>status: su valor es "200" en caso de que se haya producido con éxito la consulta de la persona, y el valor es "404" en 
+                                caso de error. No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura, ya que su uso es 
+                                meramente informativo y sirve para informar de los mensajes de error dentro de la web, sin que intervenga el protocolo 
+                                HTTP.
+                            </li>
+                            <br>
+                            <li>content: su valor puede contener diccionatio con objetos de tipo "Persona" que contengan datos de la persona cuyo DNI 
+                                se ha especificado, un diccionario  con objetos de tipo "Persona" los datos de todas las personas de la base de datos o 
+                                un mensaje de error. No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura.
+                            </li>
+                        </ul>
                     </p>
                     
                     <pre>
-                        function consultarPersona(operacion)
-                        {
-                            if(operacion == "consultar")
-                            {
-                                $("#formulario_consulta #respuesta_consulta").css("font-weight","normal");
-                                $("#formulario_consulta #respuesta_consulta").css("color","black");
-                                $("#formulario_consulta #respuesta_consulta").css("background-color","white");
-                                $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
-                                $("#formulario_consulta #respuesta_consulta").css("text-align","center");
-                                
-                                $("#formulario_consulta #respuesta_consulta").html("");
-                                
-                                recurso = URL_BASE + $.trim($("#formulario_consulta #dni").val());
-                                
-                                $.get(recurso,function(data)
-                                {
-                                    if("error" in data)
-                                    {
-                                        $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
-                                        $("#formulario_consulta #respuesta_consulta").css("color","white");
-                                        $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
-                                        $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
-                                        $("#formulario_consulta #respuesta_consulta").css("text-align","center");
-                                        
-                                        $("#formulario_consulta #respuesta_consulta").html("Error: " + data.error);
-                                    }
-                                    else if("informacion" in data)
-                                    {
-                                        $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
-                                        $("#formulario_consulta #respuesta_consulta").css("color","white");
-                                        $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
-                                        $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
-                                        $("#formulario_consulta #respuesta_consulta").css("text-align","center");
-                                        
-                                        $("#formulario_consulta #respuesta_consulta").html("Información: " + data.informacion);
-                                    }
-                                    else
-                                    {
-                                        var tabla;
-                                        
-                                        tabla = "&lt;table id='tabla_consulta'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
-                                        tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
-                                        
-                                        for(i in data)
-                                        {
-                                            tabla += "&lt;tr&gt;&lt;td&gt;" + data[i].dni + "&lt;/td&gt;&lt;td&gt;" + data[i].nombre + "&lt;/td&gt;";
-                                            tabla += "&lt;td&gt;" + data[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + data[i].apellido2 + "&lt;/td&gt;";
-                                            tabla += "&lt;td&gt;" + data[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
-                                        }
-                                        
-                                        $("#formulario_consulta #respuesta_consulta").html(tabla);
-                                        
-                                        $("#formulario_consulta #dni").val("");
-                                        
-                                        $("#tabla_consulta").css("display","none");
-                                        $("#tabla_consulta").fadeIn("slow");
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","normal");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("color","black");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","white");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
-                                
-                                $("#formulario_actualizacion #respuesta_actualizacion").html("");
-                                $("#formulario_actualizacion #datos_persona").html("");
-                                
-                                if($("#formulario_actualizacion #dni").val() == "*")
-                                {
-                                    recurso = URL_BASE + '';
-                                }
-                                else
-                                {
-                                    recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni").val());
-                                }
-                                
-                                $.get(recurso,function(data)
-                                {
-                                    if("error" in data)
-                                    {
-                                        $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
-                                        $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
-                                        $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
-                                        $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
-                                        $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
-                                        
-                                        $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.error);
-                                    }
-                                    else
-                                    {
-                                        var tabla;
-                                        var dni = Object.keys(data)[0];
-                                        
-                                        tabla += "&lt;table&gt;&lt;tr&gt;&lt;td&gt;DNI:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='dni2' id='dni2' size='10' value='" + data[dni].dni;
-                                        tabla += "' readonly/&gt;&lt;/td&gt;&lt;/tr&gt;";
-                                        
-                                        tabla += "&lt;tr&gt;&lt;td&gt;Nombre:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='nombre' id='nombre' size='10' value='" + data[dni].nombre;
-                                        tabla += "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
-                                        
-                                        tabla += "&lt;tr&gt;&lt;td&gt;Primer apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido1' id='apellido1'";
-                                        tabla += " size='10'value='" + data[dni].apellido1 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
-                                        
-                                        tabla += "&lt;tr&gt;&lt;td&gt;Segundo apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido2' id='apellido2'"; 
-                                        tabla += " size='10'value='" + data[dni].apellido2 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
-                                        
-                                        tabla += "&lt;tr&gt;&lt;td&gt;Edad:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='edad' id='edad'  size='10' value='" + data[dni].edad + "'/&gt;";
-                                        tabla += "&lt;/td&gt;&lt;/tr&gt;"
-                                        
-                                        tabla += "&lt;tr&gt;&lt;td class='celda_boton' colspan='2'&gt;&lt;span class='boton' id='actualizar_persona'";
-                                        tabla += " onClick='actualizarPersona();'&gt;Actualizar&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
-                                        
-                                        $("#formulario_actualizacion #datos_persona").html(tabla);
-                                        
-                                        $("#formulario_actualizacion #dni").val("");
-                                        
-                                        $("#tabla_actualizacion").css("display","none");
-                                        $("#tabla_actualizacion").fadeIn("slow");
-                                    }
-                                });
-                            }
-                        }
+function consultarPersona(operacion)
+{
+    if(operacion == "consultar")
+    {
+        $("#formulario_consulta #respuesta_consulta").css("font-weight","normal");
+        $("#formulario_consulta #respuesta_consulta").css("color","black");
+        $("#formulario_consulta #respuesta_consulta").css("background-color","white");
+        $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+        $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+        
+        $("#formulario_consulta #respuesta_consulta").html("");
+        
+        recurso = URL_BASE + $.trim($("#formulario_consulta #dni").val());
+        
+        $.get(recurso,function(data)
+        {
+            if(data.status == 404)
+            {
+                $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                $("#formulario_consulta #respuesta_consulta").css("color","white");
+                $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                
+                $("#formulario_consulta #respuesta_consulta").html("Error: " + data.content);
+            }
+            else if(typeof(data.content) == "string")
+            {
+                $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
+                $("#formulario_consulta #respuesta_consulta").css("color","white");
+                $("#formulario_consulta #respuesta_consulta").css("background-color","#0099FF");
+                $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
+                $("#formulario_consulta #respuesta_consulta").css("text-align","center");
+                
+                $("#formulario_consulta #respuesta_consulta").html("Información: " + data.content);
+            }
+            else
+            {
+                var tabla, json = new Object;
+                
+                json = data.content;
+                
+                tabla = "&lt;table id='tabla_consulta'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
+                tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
+                
+                for(i in json)
+                {
+                    tabla += "&lt;tr&gt;&lt;td&gt;" + json[i].dni + "&lt;/td&gt;&lt;td&gt;" + json[i].nombre + "&lt;/td&gt;";
+                    tabla += "&lt;td&gt;" + json[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + json[i].apellido2 + "&lt;/td&gt;";
+                    tabla += "&lt;td&gt;" + json[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
+                }
+                
+                $("#formulario_consulta #respuesta_consulta").html(tabla);
+                
+                $("#formulario_consulta #dni").val("");
+                
+                $("#tabla_consulta").css("display","none");
+                $("#tabla_consulta").fadeIn("slow");
+            }
+        });
+    }
+    else
+    {
+        $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","normal");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("color","black");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","white");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+        
+        $("#formulario_actualizacion #respuesta_actualizacion").html("");
+        $("#formulario_actualizacion #datos_persona").html("");
+        
+        if($("#formulario_actualizacion #dni").val() == "*")
+        {
+            recurso = URL_BASE + '';
+        }
+        else
+        {
+            recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni").val());
+        }
+        
+        $.get(recurso,function(data)
+        {
+            if(data.status == 404)
+            {
+                $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+                $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+                $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+                $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+                $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+                
+                $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.content);
+            }
+            else
+            {
+                var tabla, json = new Object;
+                var dni;
+                
+                json = data.content;
+                
+                dni = Object.keys(json)[0];
+                
+                tabla = "&lt;table&gt;&lt;tr&gt;&lt;td&gt;DNI:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='dni2' id='dni2' size='10' value='" + json[dni].dni;
+                tabla += "' readonly/&gt;&lt;/td&gt;&lt;/tr&gt;";
+                
+                tabla += "&lt;tr&gt;&lt;td&gt;Nombre:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='nombre' id='nombre' size='10' value='" + json[dni].nombre;
+                tabla += "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                
+                tabla += "&lt;tr&gt;&lt;td&gt;Primer apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido1' id='apellido1'";
+                tabla += " size='10'value='" + json[dni].apellido1 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                
+                tabla += "&lt;tr&gt;&lt;td&gt;Segundo apellido:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='apellido2' id='apellido2'"; 
+                tabla += " size='10'value='" + json[dni].apellido2 + "'/&gt;&lt;/td&gt;&lt;/tr&gt;"
+                
+                tabla += "&lt;tr&gt;&lt;td&gt;Edad:&lt;/td&gt;&lt;td&gt;&lt;input type='text' name='edad' id='edad'  size='10' value='" + json[dni].edad + "'/&gt;";
+                tabla += "&lt;/td&gt;&lt;/tr&gt;"
+                
+                tabla += "&lt;tr&gt;&lt;td class='celda_boton' colspan='2'&gt;&lt;span class='boton' id='actualizar_persona'";
+                tabla += " onClick='actualizarPersona();'&gt;Actualizar&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+                
+                $("#formulario_actualizacion #datos_persona").html(tabla);
+                
+                $("#formulario_actualizacion #dni").val("");
+                
+                $("#tabla_actualizacion").css("display","none");
+                $("#tabla_actualizacion").fadeIn("slow");
+            }
+        });
+    }
+}
                     </pre>
                 </div>
                 
                 <div>
                     <h2>JQuery: Actualización de persona</h2>
                     
-                    <p>Una vez que la persona ha consultado los datos de la persona que quiere actualizar, puede editar los atributos que desee y enviar 
-                        la peteición al servidor. Los campos del formulario para actualizar los datos de una persona se encuentran en la división 
-                        ("div") cuyo "id" es "formulario_actualizacion". Dichos campos son aquellos cuyos atributos "id" son: "dni", "nombre", 
-                        "apellido1", "apellido2" y "edad". Además, el formulario contiene un elemento "p" cuyo "id" es "respuesta_actualizacion", y este 
-                        elemento se usará para representar la información obtenida tras realizar la petición al servidor.
+                    <p>Una vez que la persona ha consultado los datos de la persona que quiere actualizar, puede editar los atributos que desee y 
+                        enviar la peteición al servidor. Los campos del formulario para actualizar los datos de una persona se encuentran en la 
+                        división ("div") cuyo "id" es "formulario_actualizacion". Dichos campos son aquellos cuyos atributos "id" son: "dni", "nombre", 
+                        "apellido1", "apellido2" y "edad". Además, el formulario contiene un elemento "p" cuyo "id" es "respuesta_actualizacion", y 
+                        este elemento se usará para representar la información obtenida tras realizar la petición al servidor.
                         <br><br>
                         Inicialmente, se reconstruye la URL a partir de los campos indicados en el formulario. Cada campo debe ir unido en la URL 
                         mediante el carácter "/". Posteriormente, se realiza la petición de tipo "POST" mediante la función "post()" de JQuery.
                         <br><br>
                         Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta y se indica el mensaje de éxito al 
-                        realizar la actualización.
+                        realizar la actualización. El mensaje recibido por el servidor siempre contiene 2 campos dentro de la estructura JSON:
+                        <ul>
+                            <li>status: su valor es "200" en caso de que se haya producido con éxito la actualización de la persona, y el valor es 
+                                "404" en caso de error. No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura, ya que su uso 
+                                es meramente informativo y sirve para informar de los mensajes de error dentro de la web, sin que intervenga el 
+                                protocolo HTTP.
+                            </li>
+                            <br>
+                            <li>content: su valor puede contener un mensaje de éxito o de error. No debe confundirse con el protocolo HTTP, aunque 
+                                utilice la misma nomenclatura.
+                            </li>
+                        </ul>
                     </p>
                     
                     <pre>
-                        function actualizarPersona()
-                        {
-                            recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni2").val()) + "/" + $.trim( $("#formulario_actualizacion #nombre").val());
-                            recurso += "/" + $.trim($("#formulario_actualizacion #apellido1").val());
-                            recurso += "/" + $.trim($("#formulario_actualizacion #apellido2").val());
-                            recurso += "/" + $.trim($("#formulario_actualizacion #edad").val());
-                            
-                            $.post(recurso,function(data)
-                            {
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
-                                $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
-                                
-                                $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + data.actualizado + " actualizada con éxito.");
-                                
-                                $("#formulario_actualizacion #datos_persona").html('');
-                            });
-                        }
+function actualizarPersona()
+{
+    recurso = URL_BASE + $.trim($("#formulario_actualizacion #dni2").val()) + "/" + $.trim( $("#formulario_actualizacion #nombre").val());
+    recurso += "/" + $.trim($("#formulario_actualizacion #apellido1").val());
+    recurso += "/" + $.trim($("#formulario_actualizacion #apellido2").val());
+    recurso += "/" + $.trim($("#formulario_actualizacion #edad").val());
+    
+    $.post(recurso,function(data)
+    {
+        $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("background-color","#0099FF");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
+        $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
+        
+        $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + $.trim($("#formulario_actualizacion #dni2").val()) + " actualizada con éxito.");
+        
+        $("#formulario_actualizacion #datos_persona").html('');
+    });
+}
                     </pre>
                 </div>
                 
@@ -526,64 +576,79 @@
                         <br><br>
                         Una vez recibida la respuesta, se formatea el estilo del párrafo que contendrá la respuesta, se indica del mensaje error en caso 
                         de error, o de información en caso de que no se encuentre a ningún usuario según el criterio de búsqueda. En caso de éxito, se 
-                        muestra una tabla con la información de las personas que cumplen el criterio de búsqueda.
+                        muestra una tabla con la información de las personas que cumplen el criterio de búsqueda. El mensaje recibido por el servidor siempre contiene 2 campos dentro de la estructura JSON:
+                        <ul>
+                            <li>status: su valor es "200" en caso de que se haya producido con éxito la búsqueda según el criterio, y el valor es "404" 
+                                en caso de error. No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura, ya que su uso es 
+                                meramente informativo y sirve para informar de los mensajes de error dentro de la web, sin que intervenga el protocolo 
+                                HTTP.
+                            </li>
+                            <br>
+                            <li>content: su valor puede contener diccionatio con objetos de tipo "Persona" que contengan datos de las personas que 
+                            cumplan con el criterio de la búsqueda, un mensaje de información o un mensaje de error. No debe confundirse con el 
+                            protocolo HTTP, aunque utilice la misma nomenclatura.
+                            </li>
+                        </ul>
                     </p>
                     
                     <pre>
-                        function buscarPersonas()
-                        {
-                            $("#formulario_busqueda #respuesta_busqueda").css("font-weight","normal");
-                            $("#formulario_busqueda #respuesta_busqueda").css("color","black");
-                            $("#formulario_busqueda #respuesta_busqueda").css("background-color","white");
-                            $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
-                            $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
-                            
-                            $("#formulario_busqueda #respuesta_busqueda").html("");
-                            
-                            recurso = URL_BASE + $("#formulario_busqueda #atributo").val() + "/" + $.trim($("#formulario_busqueda #valor").val());
-                            
-                            $.get(recurso,function(data)
-                            {
-                                if("error" in data)
-                                {
-                                    $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("color","white");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
-                                    
-                                    $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.error);
-                                }
-                                else if("informacion" in data)
-                                {
-                                    $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("color","white");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
-                                    $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
-                                    
-                                    $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.informacion);
-                                }
-                                else
-                                {
-                                    var tabla;
-                                    
-                                    tabla = "&lt;table id='tabla_busqueda'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
-                                    tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
-                                    
-                                    for(i in data)
-                                    {
-                                        tabla += "&lt;tr&gt;&lt;td&gt;" + data[i].dni + "&lt;/td&gt;&lt;td&gt;" + data[i].nombre + "&lt;/td&gt;";
-                                        tabla += "&lt;td&gt;" + data[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + data[i].apellido2 + "&lt;/td&gt;";
-                                        tabla += "&lt;td&gt;" + data[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
-                                    }
-                                    
-                                    $("#formulario_busqueda #respuesta_busqueda").html(tabla);
-                                    
-                                    $("#tabla_busqueda").css("display","none");
-                                    $("#tabla_busqueda").fadeIn("slow");
-                                }
-                            });
+function buscarPersonas()
+{
+    $("#formulario_busqueda #respuesta_busqueda").css("font-weight","normal");
+    $("#formulario_busqueda #respuesta_busqueda").css("color","black");
+    $("#formulario_busqueda #respuesta_busqueda").css("background-color","white");
+    $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+    $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+    
+    $("#formulario_busqueda #respuesta_busqueda").html("");
+    
+    recurso = URL_BASE + $("#formulario_busqueda #atributo").val() + "/" + $.trim($("#formulario_busqueda #valor").val());
+    
+    $.get(recurso,function(data)
+    {
+        if(data.status == 404)
+        {
+            $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+            $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+            $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+            $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+            $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+            
+            $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.content);
+        }
+        else if(typeof(data.content) == "string")
+        {
+            $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
+            $("#formulario_busqueda #respuesta_busqueda").css("color","white");
+            $("#formulario_busqueda #respuesta_busqueda").css("background-color","#0099FF");
+            $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
+            $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
+            
+            $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.content);
+        }
+        else
+        {
+            var tabla, json = new Object;
+            
+            json = data.content;
+            
+            tabla = "&lt;table id='tabla_busqueda'&gt;&lt;tr&gt;&lt;th&gt;DNI&lt;/th&gt;&lt;th&gt;Nombre&lt;/th&gt;&lt;th&gt;Primer apellido&lt;/th&gt;";
+            tabla += "&lt;th&gt;Segundo apellido&lt;/th&gt;&lt;th&gt;Edad&lt;/th&gt;&lt;/tr&gt;";
+            
+            for(i in json)
+            {
+                tabla += "&lt;tr&gt;&lt;td&gt;" + json[i].dni + "&lt;/td&gt;&lt;td&gt;" + json[i].nombre + "&lt;/td&gt;";
+                tabla += "&lt;td&gt;" + json[i].apellido1 + "&lt;/td&gt;&lt;td&gt;" + json[i].apellido2 + "&lt;/td&gt;";
+                tabla += "&lt;td&gt;" + json[i].edad + "&lt;/td&gt;&lt;/tr&gt;";
+            }
+            
+            $("#formulario_busqueda #respuesta_busqueda").html(tabla);
+            
+            $("#tabla_busqueda").css("display","none");
+            $("#tabla_busqueda").fadeIn("slow");
+        }
+    });
+}
                     </pre>
                 </div>
             </div>
@@ -623,13 +688,13 @@
                     $("#formulario_creacion #respuesta_creacion").css("border-radius","3px");
                     $("#formulario_creacion #respuesta_creacion").css("text-align","center");
                     
-                    if("error" in data)
+                    if(data.status == 404)
                     {
-                        $("#formulario_creacion #respuesta_creacion").html("Error :" + data.error);
+                        $("#formulario_creacion #respuesta_creacion").html("Error: " + data.content);
                     }
                     else
                     {
-                        $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + data.creado + " creada con éxito.");
+                        $("#formulario_creacion #respuesta_creacion").html("Persona con DNI " + $.trim($("#formulario_creacion #dni").val()) + " creada con éxito.");
                         
                         $("#formulario_creacion #dni").val('');
                         $("#formulario_creacion #nombre").val('');
@@ -657,7 +722,7 @@
                     
                     $.get(recurso,function(data)
                     {
-                        if("error" in data)
+                        if(data.status == 404)
                         {
                             $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
                             $("#formulario_consulta #respuesta_consulta").css("color","white");
@@ -665,9 +730,9 @@
                             $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
                             $("#formulario_consulta #respuesta_consulta").css("text-align","center");
                             
-                            $("#formulario_consulta #respuesta_consulta").html("Error: " + data.error);
+                            $("#formulario_consulta #respuesta_consulta").html("Error: " + data.content);
                         }
-                        else if("informacion" in data)
+                        else if(typeof(data.content) == "string")
                         {
                             $("#formulario_consulta #respuesta_consulta").css("font-weight","bold");
                             $("#formulario_consulta #respuesta_consulta").css("color","white");
@@ -675,20 +740,22 @@
                             $("#formulario_consulta #respuesta_consulta").css("border-radius","3px");
                             $("#formulario_consulta #respuesta_consulta").css("text-align","center");
                             
-                            $("#formulario_consulta #respuesta_consulta").html("Información: " + data.informacion);
+                            $("#formulario_consulta #respuesta_consulta").html("Información: " + data.content);
                         }
                         else
                         {
-                            var tabla;
+                            var tabla, json = new Object;
+                            
+                            json = data.content;
                             
                             tabla = "<table id='tabla_consulta'><tr><th>DNI</th><th>Nombre</th><th>Primer apellido</th>";
                             tabla += "<th>Segundo apellido</th><th>Edad</th></tr>";
                             
-                            for(i in data)
+                            for(i in json)
                             {
-                                tabla += "<tr><td>" + data[i].dni + "</td><td>" + data[i].nombre + "</td>";
-                                tabla += "<td>" + data[i].apellido1 + "</td><td>" + data[i].apellido2 + "</td>";
-                                tabla += "<td>" + data[i].edad + "</td></tr>";
+                                tabla += "<tr><td>" + json[i].dni + "</td><td>" + json[i].nombre + "</td>";
+                                tabla += "<td>" + json[i].apellido1 + "</td><td>" + json[i].apellido2 + "</td>";
+                                tabla += "<td>" + json[i].edad + "</td></tr>";
                             }
                             
                             $("#formulario_consulta #respuesta_consulta").html(tabla);
@@ -722,7 +789,7 @@
                     
                     $.get(recurso,function(data)
                     {
-                        if("error" in data)
+                        if(data.status == 404)
                         {
                             $("#formulario_actualizacion #respuesta_actualizacion").css("font-weight","bold");
                             $("#formulario_actualizacion #respuesta_actualizacion").css("color","white");
@@ -730,26 +797,30 @@
                             $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
                             $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
                             
-                            $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.error);
+                            $("#formulario_actualizacion #respuesta_actualizacion").html("Error: " + data.content);
                         }
                         else
                         {
-                            var tabla;
-                            var dni = Object.keys(data)[0];
+                            var tabla, json = new Object;
+                            var dni;
                             
-                            tabla += "<table><tr><td>DNI:</td><td><input type='text' name='dni2' id='dni2' size='10' value='" + data[dni].dni;
+                            json = data.content;
+                            
+                            dni = Object.keys(json)[0];
+                            
+                            tabla = "<table><tr><td>DNI:</td><td><input type='text' name='dni2' id='dni2' size='10' value='" + json[dni].dni;
                             tabla += "' readonly/></td></tr>";
                             
-                            tabla += "<tr><td>Nombre:</td><td><input type='text' name='nombre' id='nombre' size='10' value='" + data[dni].nombre;
+                            tabla += "<tr><td>Nombre:</td><td><input type='text' name='nombre' id='nombre' size='10' value='" + json[dni].nombre;
                             tabla += "'/></td></tr>"
                             
                             tabla += "<tr><td>Primer apellido:</td><td><input type='text' name='apellido1' id='apellido1'";
-                            tabla += " size='10'value='" + data[dni].apellido1 + "'/></td></tr>"
+                            tabla += " size='10'value='" + json[dni].apellido1 + "'/></td></tr>"
                             
                             tabla += "<tr><td>Segundo apellido:</td><td><input type='text' name='apellido2' id='apellido2'"; 
-                            tabla += " size='10'value='" + data[dni].apellido2 + "'/></td></tr>"
+                            tabla += " size='10'value='" + json[dni].apellido2 + "'/></td></tr>"
                             
-                            tabla += "<tr><td>Edad:</td><td><input type='text' name='edad' id='edad'  size='10' value='" + data[dni].edad + "'/>";
+                            tabla += "<tr><td>Edad:</td><td><input type='text' name='edad' id='edad'  size='10' value='" + json[dni].edad + "'/>";
                             tabla += "</td></tr>"
                             
                             tabla += "<tr><td class='celda_boton' colspan='2'><span class='boton' id='actualizar_persona'";
@@ -782,7 +853,7 @@
                     $("#formulario_actualizacion #respuesta_actualizacion").css("border-radius","3px");
                     $("#formulario_actualizacion #respuesta_actualizacion").css("text-align","center");
                     
-                    $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + data.actualizado + " actualizada con éxito.");
+                    $("#formulario_actualizacion #respuesta_actualizacion").html("Persona con DNI " + $.trim($("#formulario_actualizacion #dni2").val()) + " actualizada con éxito.");
                     
                     $("#formulario_actualizacion #datos_persona").html('');
                 });
@@ -803,7 +874,7 @@
                 
                 $.get(recurso,function(data)
                 {
-                    if("error" in data)
+                    if(data.status == 404)
                     {
                         $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
                         $("#formulario_busqueda #respuesta_busqueda").css("color","white");
@@ -811,9 +882,9 @@
                         $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
                         $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
                         
-                        $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.error);
+                        $("#formulario_busqueda #respuesta_busqueda").html("Error: " + data.content);
                     }
-                    else if("informacion" in data)
+                    else if(typeof(data.content) == "string")
                     {
                         $("#formulario_busqueda #respuesta_busqueda").css("font-weight","bold");
                         $("#formulario_busqueda #respuesta_busqueda").css("color","white");
@@ -821,20 +892,22 @@
                         $("#formulario_busqueda #respuesta_busqueda").css("border-radius","3px");
                         $("#formulario_busqueda #respuesta_busqueda").css("text-align","center");
                         
-                        $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.informacion);
+                        $("#formulario_busqueda #respuesta_busqueda").html("Información: " + data.content);
                     }
                     else
                     {
-                        var tabla;
+                        var tabla, json = new Object;
+                        
+                        json = data.content;
                         
                         tabla = "<table id='tabla_busqueda'><tr><th>DNI</th><th>Nombre</th><th>Primer apellido</th>";
                         tabla += "<th>Segundo apellido</th><th>Edad</th></tr>";
                         
-                        for(i in data)
+                        for(i in json)
                         {
-                            tabla += "<tr><td>" + data[i].dni + "</td><td>" + data[i].nombre + "</td>";
-                            tabla += "<td>" + data[i].apellido1 + "</td><td>" + data[i].apellido2 + "</td>";
-                            tabla += "<td>" + data[i].edad + "</td></tr>";
+                            tabla += "<tr><td>" + json[i].dni + "</td><td>" + json[i].nombre + "</td>";
+                            tabla += "<td>" + json[i].apellido1 + "</td><td>" + json[i].apellido2 + "</td>";
+                            tabla += "<td>" + json[i].edad + "</td></tr>";
                         }
                         
                         $("#formulario_busqueda #respuesta_busqueda").html(tabla);

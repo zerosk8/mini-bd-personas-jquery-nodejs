@@ -30,20 +30,32 @@
  * 5. Buscar datos de personas, segun un atributo dado, con la operacion GET, el atributo y el valor:
  *      '/persona/<atributo>/<valor>' donde <atributo> puede ser: 'dni', 'nombre', 'apellido1', 'apellido2' o 'edad'
  * 
+ * El mensaje enviado por el servidor siempre contiene 2 campos dentro de la estructura JSON:
+ * 
+ * - status: su valor es "200" en caso de que se haya producido con éxito la operación solicitada, y el valor es "404" en caso de error.
+ *      No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura, ya que su uso es meramente informativo y sirve 
+ *      para informar de los mensajes de error dentro de la web, sin que intervenga el protocolo HTTP.
+ * 
+ * - content: su valor puede contener un mensaje de éxito, un diccionario con objetos de tipo "Persona" o un mensaje de error.
+ *      No debe confundirse con el protocolo HTTP, aunque utilice la misma nomenclatura.
+ * 
  * La base de datos esta implementada en un diccionario, el cual, utiliza el DNI de la persona como identificativo
  * unico para cada persona. Las respuestas servidas al cliente siguen la estructura JSON.
  * La direccion URL raiz para realizar peticiones a la base de datos, cuando el servidor esta en ejecucion, es:
  * 
  * http://127.0.0.1:8080/persona/
  * 
- * El programa cliente se encuentra implementado en el fichero "cliente.js".
+ * El programa cliente se encuentra implementado en los ficheros "cliente.html", en los lenguajes HTML y JavaScript para el navegador
+ * , y "cliente.js", en el lenguaje JavaScript para el interprete Node.js.
  * 
  * 
  ************************************************************************************/
 
+var puerto = process.argv[2]?process.argv[2]:8080;
+var ip = "127.0.0.1";
 
 var fs = require('fs');
-var express = require('./express');
+var express = require('express');
 var lib_persona = require("./lib_persona_2.js");
 
 // var app = express.createServer(); // Esta funcion esta en desuso
@@ -53,7 +65,6 @@ var PAGINA_INICIO = 'cliente.html';
 var index = fs.readFileSync(PAGINA_INICIO,'utf8');
 
 var personas = new Object;
-var puerto = process.argv[2]?process.argv[2]:8080;
 var persona_aux;
 var cadena_aux;
 
@@ -67,119 +78,133 @@ app.get('/', function (req, res)
 // Crear una nueva persona en la base de datos
 app.put('/persona/:dni/:nombre/:apellido1/:apellido2/:edad',function(req,res)
 {
+    var mensaje = new Object();
+    
     persona_aux = new lib_persona.Persona(req.params.dni,req.params.nombre,req.params.apellido1,req.params.apellido2,req.params.edad);
     
     if(!(req.params.dni in personas))
     {
         personas[req.params.dni] = persona_aux;
         
-        cadena_aux = "{\n\"creado\": \"" + req.params.dni + "\"\n}\n";
+        mensaje.status = 200;
+        mensaje.content = "Creado DNI " + req.params.dni;
     }
     else
     {
-        cadena_aux = "{\n\"error\": \"Ya existe una persona con ese número de DNI en la base de datos.\"\n}\n";
+        mensaje.status = 404;
+        mensaje.content = "Ya existe una persona con ese número de DNI en la base de datos.";
     }
+    
+    cadena_aux = JSON.stringify(mensaje);
     
     res.contentType('application/json');
     res.send(cadena_aux);
     
+    console.log('\n');
     console.log(cadena_aux);
 });
 
 // Obtener datos de una persona segun el DNI especificado, o bien, los datos de todas las personas
 app.get('/persona/:dni',function(req,res)
 {
+    var mensaje = new Object();
+    
     if(req.params.dni == '*')
     {
-        var contador = 1;
-        
-        cadena_aux = "{\n";
-        
-        for(i in personas)
+        if(Object.keys(personas).length > 0)
         {
-            if(contador > 1)
-            {
-                cadena_aux += ",";
-            }
-            
-            cadena_aux += "\"" + personas[i].dni + "\":\n{\n\"dni\": \"" + personas[i].dni + "\",\n\"nombre\": \"" + personas[i].nombre;
-            cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-            cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-            cadena_aux += "\"\n}\n";
-            
-            contador++;
+            mensaje.status = 200;
+            mensaje.content = personas;
         }
-        
-        cadena_aux += "}\n";
-        
-        if(cadena_aux.length == 4)
+        else
         {
-            cadena_aux = "{\n\"informacion\": \"La base de datos está vacía.\"\n}\n";
+            mensaje.status = 200;
+            mensaje.content = "La base de datos está vacía.";
         }
     }
     else{
         if(req.params.dni in personas)
         {
-            persona_aux = personas[req.params.dni];
+            var resultado = new Object();
             
-            cadena_aux = "{\n\"" + persona_aux.dni + "\":\n{\n\"dni\": \"" + persona_aux.dni + "\",\n\"nombre\": \"";
-            cadena_aux += persona_aux.nombre + " \",\n\"apellido1\": \"" + persona_aux.apellido1;
-            cadena_aux += "\",\n\"apellido2\": \"" + persona_aux.apellido2 + "\",\n\"edad\": \"" + persona_aux.edad;
-            cadena_aux += "\"\n}\n}\n";
+            resultado[req.params.dni] = personas[req.params.dni];
+            
+            mensaje.status = 200;
+            mensaje.content = resultado;
         }
         else
         {
-            cadena_aux = "{\n\"error\": \"No existe ninguna persona con ese número de DNI en la base de datos.\"\n}\n";
+            mensaje.status = 404;
+            mensaje.content = "No existe ninguna persona con ese número de DNI en la base de datos.";
         }
     }
+    
+    cadena_aux = JSON.stringify(mensaje);
     
     res.contentType('application/json');
     res.send(cadena_aux);
     
+    console.log('\n');
     console.log(cadena_aux);
 });
 
 // Actualizar un atributo dado de una persona especificada en la base de datos
 app.post('/persona/:dni/:atributo/:valor',function(req,res)
 {
+    var mensaje = new Object();
+    var existe_atributo = true;
+    
     if(req.params.dni in personas)
     {
         switch(req.params.atributo)
         {
             case 'nombre':  personas[req.params.dni].nombre = req.params.valor;
-                            cadena_aux = "{\n\"actualizado\": \"" + req.params.dni + "\"\n}\n";
                             break;
             
             case 'apellido1':   personas[req.params.dni].apellido1 = req.params.valor;
-                                cadena_aux = "{\n\"actualizado\": \"" + req.params.dni + "\"\n}\n";
                                 break;
             
             case 'apellido2':   personas[req.params.dni].apellido2 = req.params.valor;
-                                cadena_aux = "{\n\"actualizado\": \"" + req.params.dni + "\"\n}\n";
                                 break;
             
             case 'edad':    personas[req.params.dni].edad = req.params.valor;
-                            cadena_aux = "{\n\"actualizado\": \"" + req.params.dni + "\"\n}\n";
                             break;
             
-            default:    cadena_aux = "{\n\"error\": \"No existe el atributo especificado.\"\n}\n";
+            default:    existe_atributo = false;
                         break;
+        }
+        
+        if(existe_atributo)
+        {
+            mensaje.status = 200;
+            mensaje.content = "Actualizado DNI " + req.params.dni;
+        }
+        else
+        {
+            mensaje.status = 404;
+            mensaje.content = "No existe el atributo especificado.";
         }
     }
     else
     {
-        cadena_aux = "{\n\"error\": \"No existe ninguna persona con ese número de DNI en la base de datos.\"\n}\n";
+        mensaje.status = 404;
+        mensaje.content = "No existe ninguna persona con ese número de DNI en la base de datos.";
     }
+    
+    cadena_aux = JSON.stringify(mensaje);
     
     res.contentType('application/json');
     res.send(cadena_aux);
     
+    console.log('\n');
     console.log(cadena_aux);
 });
 
 // Actualizar todos los datos de una persona especificada en la base de datos
 app.post('/persona/:dni/:nombre/:apellido1/:apellido2/:edad',function(req,res)
 {
+    var mensaje = new Object();
+    
     if(req.params.dni in personas)
     {
         personas[req.params.dni].nombre = req.params.nombre;
@@ -187,177 +212,115 @@ app.post('/persona/:dni/:nombre/:apellido1/:apellido2/:edad',function(req,res)
         personas[req.params.dni].apellido2 = req.params.apellido2;
         personas[req.params.dni].edad = req.params.edad;
         
-        cadena_aux = "{\n\"actualizado\": \"" + req.params.dni + "\"\n}\n";
+        mensaje.status = 200;
+        mensaje.content = "Actualizado DNI " + req.params.dni;
     }
     else
     {
-        cadena_aux = "{\n\"error\": \"No existe ninguna persona con ese número de DNI en la base de datos.\"\n}\n";
+        mensaje.status = 404;
+        mensaje.content = "No existe ninguna persona con ese número de DNI en la base de datos.";
     }
+    
+    cadena_aux = JSON.stringify(mensaje);
     
     res.contentType('application/json');
     res.send(cadena_aux);
     
+    console.log('\n');
     console.log(cadena_aux);
 });
 
 // Buscar datos de personas segun un atributo dado
 app.get('/persona/:atributo/:valor',function(req,res)
 {
-    var contador = 1;
+    var mensaje = new Object();
+    var resultado = new Object();
+    var existe_atributo = true;
     
     switch(req.params.atributo)
     {
-        case 'dni': cadena_aux = '';
-                    
-                    for(i in personas)
+        case 'dni': for(i in personas)
                     {
                         if(personas[i].dni == req.params.valor)
                         {
-                            cadena_aux = "{\n\"" + personas[i].dni + "\": {\n\"dni\": \"" + personas[i].dni;
-                            cadena_aux += "\",\n\"nombre\": \"" + personas[i].nombre;
-                            cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-                            cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-                            cadena_aux += "\"\n}\n}\n";
+                            resultado[personas[i].dni] = personas[i];
                         }
-                    }
-                    
-                    if(cadena_aux.length == 0)
-                    {
-                        cadena_aux = "{\n\"informacion\": \"No se ha encontrado ningún resultado.\"\n}\n";
                     }
                     
                     break;
         
-        case 'nombre':  cadena_aux = "{\n";
-                        
-                        for(i in personas)
+        case 'nombre':  for(i in personas)
                         {
                             if(personas[i].nombre == req.params.valor)
                             {
-                                if(contador > 1)
-                                {
-                                    cadena_aux += ",";
-                                }
-                                
-                                cadena_aux += "\"" + personas[i].dni + "\":\n{\n\"dni\": \"" + personas[i].dni;
-                                cadena_aux += "\",\n\"nombre\": \"" + personas[i].nombre;
-                                cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-                                cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-                                cadena_aux += "\"\n}\n";
-                                
-                                contador++;
+                                resultado[personas[i].dni] = personas[i];
                             }
-                        }
-                        
-                        cadena_aux += "}\n";
-                        
-                        if(cadena_aux.length == 4)
-                        {
-                            cadena_aux = "{\n\"informacion\": \"No se ha encontrado ningún resultado.\"\n}\n";
                         }
                         
                         break;
         
-        case 'apellido1':   cadena_aux = "{\n";
-                            
-                            for(i in personas)
+        case 'apellido1':   for(i in personas)
                             {
                                 if(personas[i].apellido1 == req.params.valor)
                                 {
-                                    if(contador > 1)
-                                    {
-                                        cadena_aux += ",";
-                                    }
-                                    
-                                    cadena_aux += "\"" + personas[i].dni + "\":\n{\n\"dni\": \"" + personas[i].dni;
-                                    cadena_aux += "\",\n\"nombre\": \"" + personas[i].nombre;
-                                    cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-                                    cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-                                    cadena_aux += "\"\n}\n";
-                                    
-                                    contador++;
+                                    resultado[personas[i].dni] = personas[i];
                                 }
-                            }
-                            
-                            cadena_aux += "}\n";
-                            
-                            if(cadena_aux.length == 4)
-                            {
-                                cadena_aux = "{\n\"informacion\": \"No se ha encontrado ningún resultado.\"\n}\n";
                             }
                             
                             break;
         
-        case 'apellido2':   cadena_aux = "{\n";
-                            
-                            for(i in personas)
+        case 'apellido2':   for(i in personas)
                             {
                                 if(personas[i].apellido2 == req.params.valor)
                                 {
-                                    if(contador > 1)
-                                    {
-                                        cadena_aux += ",";
-                                    }
-                                    
-                                    cadena_aux += "\"" + personas[i].dni + "\":\n{\n\"dni\": \"" + personas[i].dni;
-                                    cadena_aux += "\",\n\"nombre\": \"" + personas[i].nombre;
-                                    cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-                                    cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-                                    cadena_aux += "\"\n}\n";
-                                    
-                                    contador++;
+                                    resultado[personas[i].dni] = personas[i];
                                 }
-                            }
-                            
-                            cadena_aux += "}\n";
-                            
-                            if(cadena_aux.length == 4)
-                            {
-                                cadena_aux = "{\n\"informacion\": \"No se ha encontrado ningún resultado.\"\n}\n";
                             }
                             
                             break;
         
-        case 'edad':    cadena_aux = "{\n";
-                        
-                        for(i in personas)
+        case 'edad':    for(i in personas)
                         {
                             if(personas[i].edad == req.params.valor)
                             {
-                                if(contador > 1)
-                                {
-                                    cadena_aux += ",";
-                                }
-                                
-                                cadena_aux += "\"" + personas[i].dni + "\":\n{\n\"dni\": \"" + personas[i].dni;
-                                cadena_aux += "\",\n\"nombre\": \"" + personas[i].nombre;
-                                cadena_aux += "\",\n\"apellido1\": \"" + personas[i].apellido1;
-                                cadena_aux += "\",\n\"apellido2\": \"" + personas[i].apellido2 + "\",\n\"edad\": \"" + personas[i].edad;
-                                cadena_aux += "\"\n}\n";
-                                
-                                contador++;
+                                resultado[personas[i].dni] = personas[i];
                             }
-                        }
-                        
-                        cadena_aux += "}\n";
-                        
-                        if(cadena_aux.length == 4)
-                        {
-                            cadena_aux = "{\n\"informacion\": \"No se ha encontrado ningún resultado.\"\n}\n";
                         }
                         
                         break;
         
-        default:    cadena_aux = "{\n\"error\": \"No existe el atributo especificado.\"\n}\n";
+        default:    existe_atributo = false;
                     break;
     }
+    
+    if(existe_atributo)
+    {
+        if(Object.keys(resultado).length > 0)
+        {
+            mensaje.status = 200;
+            mensaje.content = resultado;
+        }
+        else
+        {
+            mensaje.status = 200;
+            mensaje.content = "No se ha encontrado ningún resultado.";
+        }
+    }
+    else
+    {
+        mensaje.status = 404;
+        mensaje.content = "No existe el atributo especificado.";
+    }
+    
+    cadena_aux = JSON.stringify(mensaje);
     
     res.contentType('application/json');
     res.send(cadena_aux);
     
+    console.log('\n');
     console.log(cadena_aux);
 });
 
-app.listen(puerto,"127.0.0.1");
+app.listen(puerto,ip);
 
-console.log('Servidor ejecutandose en http://127.0.0.1:' + puerto + '/');
+console.log('Servidor ejecutandose en ' + ip + ':' + puerto + '/');
